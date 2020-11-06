@@ -14,6 +14,9 @@ class ClientController extends Controller
     public function index()
     {
         //
+        $clients=Client::orderBy('id','DESC')->paginate(3);
+        return view('Client.index'.compact('clients'));
+
     }
 
     /**
@@ -24,6 +27,7 @@ class ClientController extends Controller
     public function create()
     {
         //
+        return view('Client.create');
     }
 
     /**
@@ -35,6 +39,9 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         //
+        $this->validate($request,['nombre'=>'required','apellido'=>'required','dui'=>'required','nit'=>'required','direccion'=>'required','telefono'=>'required','celular'=>'required','notas'=>'required']);
+        client::create($request->all());
+        return redirect()->route('client.index')->with('success','añadido correctamente');
     }
 
     /**
@@ -46,6 +53,8 @@ class ClientController extends Controller
     public function show($id)
     {
         //
+        $clients=Client::find($id);
+        return view('client.show',compact('clients'));
     }
 
     /**
@@ -57,6 +66,8 @@ class ClientController extends Controller
     public function edit($id)
     {
         //
+        $client=client::find($id);
+        return view('client.edit',compact('client'));
     }
 
     /**
@@ -69,6 +80,10 @@ class ClientController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $this->validate($request,['nombre'=>'required','apellido'=>'required','dui'=>'required','nit'=>'required','direccion'=>'required','telefono'=>'required','celular'=>'required','notas'=>'required']);
+        
+        client::find($id)->update($request->all());
+        return redirect()->route('client.index')->with('success','Clientes actualizados')
     }
 
     /**
@@ -80,5 +95,6 @@ class ClientController extends Controller
     public function destroy($id)
     {
         //
+        return redirect()->route(client.index)->with('sucess','Cliente Eliminado')
     }
 }
